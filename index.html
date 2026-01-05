@@ -165,33 +165,91 @@
                         </p>
                     </div>
                 </div>
-
-                <!-- Elevation SVG Chart -->
-                <div class="glass-card rounded-3xl p-8">
-                    <h3 class="text-xl font-bold mb-6 text-white border-l-4 border-emerald-500 pl-4">高度剖面圖 (3275m 挑戰)</h3>
-                    <div class="relative w-full h-64 bg-slate-900/50 rounded-xl p-4">
-                        <svg viewBox="0 0 1000 300" class="w-full h-full overflow-visible">
-                            <path d="M0,280 L290,260 L400,230 L527,180 L709,100 L818,60 L945,30 L1000,20 L1000,300 L0,300 Z" fill="url(#grad)" opacity="0.3"></path>
-                            <path d="M0,280 L290,260 L400,230 L527,180 L709,100 L818,60 L945,30 L1000,20" fill="none" stroke="#10b981" stroke-width="4"></path>
-                            <!-- Labels -->
-                            <circle cx="0" cy="280" r="5" fill="#10b981"></circle>
-                            <text x="0" y="295" fill="#94a3b8" font-size="12">地理中心碑</text>
-                            
-                            <circle cx="527" cy="180" r="5" fill="#10b981"></circle>
-                            <text x="527" y="200" fill="#94a3b8" font-size="12" text-anchor="middle">翠峰</text>
-                            
-                            <circle cx="1000" cy="20" r="5" fill="#f43f5e"></circle>
-                            <text x="960" y="15" fill="#f43f5e" font-size="14" font-weight="bold">武嶺 3275m</text>
-                            
-                            <defs>
-                                <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#020617;stop-opacity:0" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                </div>
+<!-- Elevation SVG Chart -->
+<div class="glass-card rounded-3xl p-8">
+   <h3 class="text-xl font-bold mb-6 text-white border-l-4 border-emerald-500 pl-4">高度剖面圖 (3275m 挑戰)</h3>
+   <div class="relative w-full h-64 bg-slate-900/50 rounded-xl p-4">
+      <h3 class="text-xl font-black mb-4 text-white border-l-4 border-emerald-500 pl-4">專業海拔剖面圖</h3>
+      <div class="glass-card rounded-3xl p-6 overflow-hidden">
+         <svg viewBox="0 0 800 300" class="w-full h-auto">
+            <defs>
+               <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"></stop>
+                  <stop offset="100%" stop-color="#10b981" stop-opacity="0"></stop>
+               </linearGradient>
+            </defs>
+            <g>
+               <line x1="60" y1="260" x2="740" y2="260" stroke="#ffffff10" stroke-dasharray="5,5"></line>
+               <text x="50" y="264" text-anchor="end" fill="#64748b" font-size="10">0</text>
+            </g>
+            <g>
+               <line x1="60" y1="203.42857142857144" x2="740" y2="203.42857142857144" stroke="#ffffff10" stroke-dasharray="5,5"></line>
+               <text x="50" y="207.42857142857144" text-anchor="end" fill="#64748b" font-size="10">900</text>
+            </g>
+            <g>
+               <line x1="60" y1="146.85714285714286" x2="740" y2="146.85714285714286" stroke="#ffffff10" stroke-dasharray="5,5"></line>
+               <text x="50" y="150.85714285714286" text-anchor="end" fill="#64748b" font-size="10">1800</text>
+            </g>
+            <g>
+               <line x1="60" y1="90.28571428571428" x2="740" y2="90.28571428571428" stroke="#ffffff10" stroke-dasharray="5,5"></line>
+               <text x="50" y="94.28571428571428" text-anchor="end" fill="#64748b" font-size="10">2700</text>
+            </g>
+            <g>
+               <line x1="60" y1="40" x2="740" y2="40" stroke="#ffffff10" stroke-dasharray="5,5"></line>
+               <text x="50" y="44" text-anchor="end" fill="#64748b" font-size="10">3500</text>
+            </g>
+            <path d="M60,260 60,231.71428571428572 257.8181818181818,210.34285714285716 332,186.45714285714286 418.5454545454545,159.42857142857144 542.1818181818182,113.54285714285714 616.3636363636364,88.4 702.9090909090909,65.14285714285714 740,54.14285714285714 L740,260 Z" fill="url(#chartGrad)"></path>
+            <path d="M60,231.71428571428572 257.8181818181818,210.34285714285716 332,186.45714285714286 418.5454545454545,159.42857142857144 542.1818181818182,113.54285714285714 616.3636363636364,88.4 702.9090909090909,65.14285714285714 740,54.14285714285714" fill="none" stroke="#10b981" stroke-width="3" stroke-linejoin="round"></path>
+            <line x1="60" y1="54.14285714285714" x2="740" y2="54.14285714285714" stroke="#f43f5e" stroke-width="1" stroke-dasharray="4,4"></line>
+            <text x="745" y="58.14285714285714" fill="#f43f5e" font-size="11" font-weight="bold">武嶺 3275m</text>
+            <g>
+               <circle cx="60" cy="231.71428571428572" r="3" fill="#10b981"></circle>
+               <text x="60" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="">0km</text>
+            </g>
+            <g>
+               <circle cx="257.8181818181818" cy="210.34285714285716" r="3" fill="#10b981"></circle>
+               <text x="257.8181818181818" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,257.8181818181818,290)">16km</text>
+            </g>
+            <g>
+               <circle cx="332" cy="186.45714285714286" r="3" fill="#10b981"></circle>
+               <text x="332" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,332,290)">22km</text>
+            </g>
+            <g>
+               <circle cx="418.5454545454545" cy="159.42857142857144" r="3" fill="#10b981"></circle>
+               <text x="418.5454545454545" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,418.5454545454545,290)">29km</text>
+            </g>
+            <g>
+               <circle cx="542.1818181818182" cy="113.54285714285714" r="3" fill="#10b981"></circle>
+               <text x="542.1818181818182" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,542.1818181818182,290)">39km</text>
+            </g>
+            <g>
+               <circle cx="616.3636363636364" cy="88.4" r="3" fill="#10b981"></circle>
+               <text x="616.3636363636364" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,616.3636363636364,290)">45km</text>
+            </g>
+            <g>
+               <circle cx="702.9090909090909" cy="65.14285714285714" r="3" fill="#10b981"></circle>
+               <text x="702.9090909090909" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,702.9090909090909,290)">52km</text>
+            </g>
+            <g>
+               <circle cx="740" cy="54.14285714285714" r="3" fill="#10b981"></circle>
+               <text x="740" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="">55km</text>
+            </g>
+            <text x="400" y="298" text-anchor="middle" fill="#475569" font-size="10" font-weight="bold">里程 (KM)</text>
+            <text x="10" y="150" text-anchor="middle" fill="#475569" font-size="10" font-weight="bold" transform="rotate(-90, 10, 150)">海拔 (M)</text>
+         </svg>
+         <div class="mt-6 flex flex-wrap justify-center gap-2">
+            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">地理中心碑</span><span class="text-slate-200 font-black">450m</span></div>
+            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">人止關</span><span class="text-slate-200 font-black">790m</span></div>
+            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">霧社</span><span class="text-slate-200 font-black">1170m</span></div>
+            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">清境</span><span class="text-slate-200 font-black">1600m</span></div>
+            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">翠峰</span><span class="text-slate-200 font-black">2330m</span></div>
+            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">鳶峰</span><span class="text-slate-200 font-black">2730m</span></div>
+            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">昆陽</span><span class="text-slate-200 font-black">3100m</span></div>
+            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">武嶺</span><span class="text-slate-200 font-black">3275m</span></div>
+         </div>
+      </div>
+   </div>
+</div>
             </div>
 
             <!-- Sidebar -->
