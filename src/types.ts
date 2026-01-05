@@ -10,15 +10,6 @@ export interface ElevationPoint {
   name: string;
   distance: number;
   elevation: number;
-  difficulty?: 'easy' | 'medium' | 'hard' | 'brutal';
-}
-
-export interface PaceSegment {
-  name: string;
-  distance: number; // 該段里程 (km)
-  gain: number;     // 該段爬升 (m)
-  avgElev: number;  // 該段平均海拔 (m)
-  difficulty: 'easy' | 'medium' | 'hard' | 'brutal';
 }
 
 export enum EventType {

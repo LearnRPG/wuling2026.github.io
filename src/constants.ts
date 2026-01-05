@@ -1,26 +1,15 @@
 
-import { ElevationPoint, EventInfo, EventType, PaceSegment } from './types';
+import { ElevationPoint, EventInfo, EventType } from './types';
 
 export const ELEVATION_DATA: ElevationPoint[] = [
-  { name: '地理中心碑', distance: 0, elevation: 450, difficulty: 'easy' },
-  { name: '人止關', distance: 16, elevation: 790, difficulty: 'easy' },
-  { name: '霧社', distance: 22, elevation: 1170, difficulty: 'medium' },
-  { name: '清境', distance: 29, elevation: 1600, difficulty: 'medium' },
-  { name: '翠峰', distance: 39, elevation: 2330, difficulty: 'hard' },
-  { name: '鳶峰', distance: 45, elevation: 2730, difficulty: 'hard' },
-  { name: '昆陽', distance: 52, elevation: 3100, difficulty: 'brutal' },
-  { name: '武嶺', distance: 55, elevation: 3275, difficulty: 'brutal' },
-];
-
-// 基於真實地理資訊的細分路段 (用於功率計算)
-export const PACE_SEGMENTS: PaceSegment[] = [
-  { name: '起點 - 人止關', distance: 16, gain: 340, avgElev: 620, difficulty: 'easy' },
-  { name: '人止關 - 霧社', distance: 6, gain: 380, avgElev: 980, difficulty: 'medium' },
-  { name: '霧社 - 清境', distance: 7, gain: 430, avgElev: 1385, difficulty: 'medium' },
-  { name: '清境 - 翠峰', distance: 10, gain: 730, avgElev: 1965, difficulty: 'hard' },
-  { name: '翠峰 - 鳶峰', distance: 6, gain: 400, avgElev: 2530, difficulty: 'hard' },
-  { name: '鳶峰 - 昆陽', distance: 7, gain: 370, avgElev: 2915, difficulty: 'brutal' },
-  { name: '昆陽 - 武嶺', distance: 3, gain: 175, avgElev: 3180, difficulty: 'brutal' },
+  { name: '地理中心碑', distance: 0, elevation: 450 },
+  { name: '人止關', distance: 16, elevation: 790 },
+  { name: '霧社', distance: 22, elevation: 1170 },
+  { name: '清境', distance: 29, elevation: 1600 },
+  { name: '翠峰', distance: 39, elevation: 2330 },
+  { name: '鳶峰', distance: 45, elevation: 2730 },
+  { name: '昆陽', distance: 52, elevation: 3100 },
+  { name: '武嶺', distance: 55, elevation: 3275 },
 ];
 
 export const EVENTS: EventInfo[] = [
