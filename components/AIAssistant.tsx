@@ -13,19 +13,16 @@ const AIAssistant: React.FC = () => {
     setResponse('');
     
     try {
-      // Create a new GoogleGenAI instance right before making an API call to ensure it always uses the most up-to-date API key.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
-      // Using gemini-3-pro-preview for coaching and training suggestions as it's a complex text task.
+      const prompt = `你是一位專業的自行車教練，專門指導台灣「武嶺」3275公尺爬坡挑戰。
+      使用者問：${input}
+      請根據武嶺的路況（人止關、翠峰、昆陽）、高海拔氣候、補給策略、訓練建議提供專業且激勵人心的回答。回答請簡潔有力，約200字以內。`;
+
       const result = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
-        contents: input,
-        config: {
-          systemInstruction: "你是一位專業的自行車教練，專門指導台灣「武嶺」3275公尺爬坡挑戰。請根據武嶺的路況（人止關、翠峰、昆陽）、高海拔氣候、補給策略、訓練建議提供專業且激勵人心的回答。回答請簡潔有力，約200字以內。",
-        },
+        model: 'gemini-3-flash-preview',
+        contents: prompt,
       });
       
-      // The GenerateContentResponse object features a text property (not a method).
       setResponse(result.text || '教練目前忙線中，請稍後再試。');
     } catch (error) {
       console.error(error);
@@ -43,7 +40,7 @@ const AIAssistant: React.FC = () => {
         </div>
         <div>
           <h3 className="font-bold text-white">武嶺 AI 訓練顧問</h3>
-          <p className="text-xs text-slate-400">詢問關於備戰、補給 or 路線建議</p>
+          <p className="text-xs text-slate-400">詢問關於備戰、補給或路線建議</p>
         </div>
       </div>
       

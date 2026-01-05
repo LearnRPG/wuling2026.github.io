@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { CountdownTime } from '../types.ts';
+import { CountdownTime } from '../types';
 
 interface CountdownTimerProps {
   targetDate: Date;

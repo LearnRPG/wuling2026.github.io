@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { color-scheme: dark; }
         body {
@@ -18,363 +18,43 @@
             -webkit-font-smoothing: antialiased;
         }
         .glass-card {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        /* 標題漸層文字修復：增加 padding 防止裁切 */
+        .rose-gold-glow {
+            box-shadow: 0 0 30px rgba(183, 110, 121, 0.2);
+            border: 1px solid rgba(183, 110, 121, 0.4);
+        }
         .title-gradient {
             background: linear-gradient(to right, #60a5fa, #34d399);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            padding-right: 20px;
-            margin-right: -20px;
-            display: inline-block;
         }
-        .countdown-box {
-            background: rgba(30, 41, 59, 0.5);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
-        .tab-active {
-            background-color: #2563eb;
-            color: white;
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
-        }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        .animate-float { animation: subtle-float 4s ease-in-out infinite; }
     </style>
-<script type="importmap">
+    <script type="importmap">
 {
   "imports": {
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "@google/genai": "https://esm.sh/@google/genai@1.3.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "recharts": "https://esm.sh/recharts@^3.6.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+    "react/": "https://esm.sh/react@^19.2.3/"
   }
 }
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body class="min-h-screen pb-20 overflow-x-hidden">
-
-    <!-- Hero Section -->
-    <div class="relative h-[60vh] flex flex-col items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1541625602330-2277a4c4b28d?auto=format&fit=crop&q=80&w=2000')">
-            <div class="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-900/60 to-slate-950"></div>
-        </div>
-        <div class="relative z-10 text-center px-4 max-w-5xl">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-600/20 border border-blue-500/50 text-blue-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-8">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-                Peak Challenge 2026
-            </div>
-            <h1 class="text-6xl md:text-9xl font-black mb-6 italic">
-                WULING <span class="title-gradient">3275</span>
-            </h1>
-            <p id="event-spirit" class="text-lg md:text-2xl font-medium text-slate-300 max-w-2xl mx-auto leading-relaxed drop-shadow-lg">
-                「3275是高度也是人生的態度」
-            </p>
-        </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 -mt-20 relative z-20">
-        <!-- Tab Switcher -->
-        <div class="flex justify-center p-1.5 bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-white/5 mb-10 max-w-xl mx-auto">
-            <button onclick="switchEvent('TIS')" id="tab-tis" class="px-6 py-3 rounded-xl font-bold transition-all flex-1 text-sm tab-active">
-                崇越盃 (06/15)
-            </button>
-            <button onclick="switchEvent('NS')" id="tab-ns" class="px-6 py-3 rounded-xl font-bold transition-all flex-1 text-sm text-slate-500 hover:text-slate-300">
-                NeverStop (06/27)
-            </button>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Main Content -->
-            <div class="lg:col-span-8 space-y-8">
-                <!-- Countdown -->
-                <div class="glass-card rounded-[2.5rem] p-8 md:p-12 border-t border-white/10 text-center">
-                    <h3 id="countdown-title" class="text-lg md:text-xl font-bold text-blue-400 mb-8 flex items-center justify-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-                        賽事倒數中
-                    </h3>
-                    <div class="flex flex-wrap justify-center gap-4 md:gap-8">
-                        <div class="flex flex-col items-center">
-                            <div id="days" class="countdown-box text-4xl md:text-6xl font-black text-white w-20 md:w-28 h-20 md:h-28 flex items-center justify-center rounded-xl border border-white/5">00</div>
-                            <span class="mt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Days</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div id="hours" class="countdown-box text-4xl md:text-6xl font-black text-white w-20 md:w-28 h-20 md:h-28 flex items-center justify-center rounded-xl border border-white/5">00</div>
-                            <span class="mt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Hours</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div id="minutes" class="countdown-box text-4xl md:text-6xl font-black text-white w-20 md:w-28 h-20 md:h-28 flex items-center justify-center rounded-xl border border-white/5">00</div>
-                            <span class="mt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Mins</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div id="seconds" class="countdown-box text-4xl md:text-6xl font-black text-white w-20 md:w-28 h-20 md:h-28 flex items-center justify-center rounded-xl border border-white/5">00</div>
-                            <span class="mt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Secs</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-12 pt-10 border-t border-white/5 grid grid-cols-2 md:grid-cols-4 gap-8">
-                        <div class="text-center">
-                            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">主辦</div>
-                            <div id="info-organizer" class="text-sm font-black text-white">載入中...</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">日期</div>
-                            <div id="info-date" class="text-sm font-black text-white">載入中...</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">總爬升</div>
-                            <div class="text-sm font-black text-emerald-400">2,750m</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">終點海拔</div>
-                            <div class="text-sm font-black text-blue-400">3,275m</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Rules -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass-card rounded-3xl p-8">
-                        <h3 class="text-xl font-bold mb-6 text-white flex items-center gap-3">
-                            <div class="w-1 h-6 bg-blue-500 rounded-full"></div>
-                            領獎流程與規則
-                        </h3>
-                        <ul id="rule-list" class="space-y-4 text-sm text-slate-400">
-                            <!-- JS Inject -->
-                        </ul>
-                    </div>
-                    <div class="glass-card rounded-3xl p-8">
-                        <h3 class="text-xl font-bold mb-6 text-white flex items-center gap-3">
-                            <div class="w-1 h-6 bg-rose-500 rounded-full"></div>
-                            安全與警告
-                        </h3>
-                        <div class="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 mb-4">
-                            <p class="text-rose-400 text-xs leading-relaxed font-medium">
-                                山上氣候多變，翠峰 (39K) 執行強制關門。棄賽者需簽切結書並回收帽貼。
-                            </p>
-                        </div>
-                        <p class="text-xs text-slate-500">
-                            晶片坐管貼禁止上車頂架前黏貼，損壞武嶺終點無成績者一律依照申訴時間辦理。
-                        </p>
-                    </div>
-                </div>
-<!-- Elevation SVG Chart -->
-<div class="glass-card rounded-3xl p-8">
-   <h3 class="text-xl font-bold mb-6 text-white border-l-4 border-emerald-500 pl-4">高度剖面圖 (3275m 挑戰)</h3>
-   <div class="relative w-full h-64 bg-slate-900/50 rounded-xl p-4">
-      <h3 class="text-xl font-black mb-4 text-white border-l-4 border-emerald-500 pl-4">專業海拔剖面圖</h3>
-      <div class="glass-card rounded-3xl p-6 overflow-hidden">
-         <svg viewBox="0 0 800 300" class="w-full h-auto">
-            <defs>
-               <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"></stop>
-                  <stop offset="100%" stop-color="#10b981" stop-opacity="0"></stop>
-               </linearGradient>
-            </defs>
-            <g>
-               <line x1="60" y1="260" x2="740" y2="260" stroke="#ffffff10" stroke-dasharray="5,5"></line>
-               <text x="50" y="264" text-anchor="end" fill="#64748b" font-size="10">0</text>
-            </g>
-            <g>
-               <line x1="60" y1="203.42857142857144" x2="740" y2="203.42857142857144" stroke="#ffffff10" stroke-dasharray="5,5"></line>
-               <text x="50" y="207.42857142857144" text-anchor="end" fill="#64748b" font-size="10">900</text>
-            </g>
-            <g>
-               <line x1="60" y1="146.85714285714286" x2="740" y2="146.85714285714286" stroke="#ffffff10" stroke-dasharray="5,5"></line>
-               <text x="50" y="150.85714285714286" text-anchor="end" fill="#64748b" font-size="10">1800</text>
-            </g>
-            <g>
-               <line x1="60" y1="90.28571428571428" x2="740" y2="90.28571428571428" stroke="#ffffff10" stroke-dasharray="5,5"></line>
-               <text x="50" y="94.28571428571428" text-anchor="end" fill="#64748b" font-size="10">2700</text>
-            </g>
-            <g>
-               <line x1="60" y1="40" x2="740" y2="40" stroke="#ffffff10" stroke-dasharray="5,5"></line>
-               <text x="50" y="44" text-anchor="end" fill="#64748b" font-size="10">3500</text>
-            </g>
-            <path d="M60,260 60,231.71428571428572 257.8181818181818,210.34285714285716 332,186.45714285714286 418.5454545454545,159.42857142857144 542.1818181818182,113.54285714285714 616.3636363636364,88.4 702.9090909090909,65.14285714285714 740,54.14285714285714 L740,260 Z" fill="url(#chartGrad)"></path>
-            <path d="M60,231.71428571428572 257.8181818181818,210.34285714285716 332,186.45714285714286 418.5454545454545,159.42857142857144 542.1818181818182,113.54285714285714 616.3636363636364,88.4 702.9090909090909,65.14285714285714 740,54.14285714285714" fill="none" stroke="#10b981" stroke-width="3" stroke-linejoin="round"></path>
-            <line x1="60" y1="54.14285714285714" x2="740" y2="54.14285714285714" stroke="#f43f5e" stroke-width="1" stroke-dasharray="4,4"></line>
-            <text x="745" y="58.14285714285714" fill="#f43f5e" font-size="11" font-weight="bold">武嶺 3275m</text>
-            <g>
-               <circle cx="60" cy="231.71428571428572" r="3" fill="#10b981"></circle>
-               <text x="60" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="">0km</text>
-            </g>
-            <g>
-               <circle cx="257.8181818181818" cy="210.34285714285716" r="3" fill="#10b981"></circle>
-               <text x="257.8181818181818" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,257.8181818181818,290)">16km</text>
-            </g>
-            <g>
-               <circle cx="332" cy="186.45714285714286" r="3" fill="#10b981"></circle>
-               <text x="332" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,332,290)">22km</text>
-            </g>
-            <g>
-               <circle cx="418.5454545454545" cy="159.42857142857144" r="3" fill="#10b981"></circle>
-               <text x="418.5454545454545" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,418.5454545454545,290)">29km</text>
-            </g>
-            <g>
-               <circle cx="542.1818181818182" cy="113.54285714285714" r="3" fill="#10b981"></circle>
-               <text x="542.1818181818182" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,542.1818181818182,290)">39km</text>
-            </g>
-            <g>
-               <circle cx="616.3636363636364" cy="88.4" r="3" fill="#10b981"></circle>
-               <text x="616.3636363636364" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,616.3636363636364,290)">45km</text>
-            </g>
-            <g>
-               <circle cx="702.9090909090909" cy="65.14285714285714" r="3" fill="#10b981"></circle>
-               <text x="702.9090909090909" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="rotate(-30,702.9090909090909,290)">52km</text>
-            </g>
-            <g>
-               <circle cx="740" cy="54.14285714285714" r="3" fill="#10b981"></circle>
-               <text x="740" y="290" text-anchor="middle" fill="#475569" font-size="9" transform="">55km</text>
-            </g>
-            <text x="400" y="298" text-anchor="middle" fill="#475569" font-size="10" font-weight="bold">里程 (KM)</text>
-            <text x="10" y="150" text-anchor="middle" fill="#475569" font-size="10" font-weight="bold" transform="rotate(-90, 10, 150)">海拔 (M)</text>
-         </svg>
-         <div class="mt-6 flex flex-wrap justify-center gap-2">
-            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">地理中心碑</span><span class="text-slate-200 font-black">450m</span></div>
-            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">人止關</span><span class="text-slate-200 font-black">790m</span></div>
-            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">霧社</span><span class="text-slate-200 font-black">1170m</span></div>
-            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">清境</span><span class="text-slate-200 font-black">1600m</span></div>
-            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">翠峰</span><span class="text-slate-200 font-black">2330m</span></div>
-            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">鳶峰</span><span class="text-slate-200 font-black">2730m</span></div>
-            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">昆陽</span><span class="text-slate-200 font-black">3100m</span></div>
-            <div class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 text-[10px] flex flex-col items-center"><span class="text-slate-500 font-bold">武嶺</span><span class="text-slate-200 font-black">3275m</span></div>
-         </div>
-      </div>
-   </div>
-</div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="lg:col-span-4 space-y-8">
-                <div class="glass-card rounded-3xl p-6 bg-slate-900/90 border border-pink-500/20">
-                    <h3 class="text-[#b76e79] font-black text-xl mb-2 flex items-center justify-between">
-                        玫瑰金武嶺鎮
-                        <span class="text-[10px] bg-[#b76e79]/20 px-2 py-1 rounded">PREMIUM</span>
-                    </h3>
-                    <p class="text-xs text-slate-400 mb-6 leading-relaxed">累積 3 次同款或中途未參加累計 5 次成績，可申請更換。</p>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-white/5 text-xs">
-                            <span class="text-slate-200">金獎 4小時內</span>
-                            <span class="text-yellow-500">●</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-white/5 text-xs">
-                            <span class="text-slate-200">銀獎 5小時內</span>
-                            <span class="text-slate-400">●</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-white/5 text-xs">
-                            <span class="text-slate-200">銅獎 7小時內</span>
-                            <span class="text-orange-700">●</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-card rounded-3xl p-6">
-                    <h3 class="font-bold text-white mb-4">賽道路線</h3>
-                    <div class="space-y-4 text-xs text-slate-400 leading-relaxed">
-                        <p>地理中心碑 → 人止關(16K) → 霧社(22K) → 清境(29K) → 翠峰(39K) → 鳶峰(45K) → 昆陽(52K) → 武嶺(55K)</p>
-                        <p class="pt-2 border-t border-white/5">總里程：約 54-55 公里</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const events = {
-            TIS: {
-                title: "2026 TIS 夏季崇越盃武嶺挑戰賽",
-                date: new Date('2026-06-15T05:00:00'),
-                organizer: "桃園市鐵人運動協會",
-                spirit: "3275是高度也是人生的態度，山在前無懼，是一種挑戰也是對山的一種尊敬。",
-                rules: [
-                    "菁英組 04:50 出發，限時 4 小時完成",
-                    "挑戰組 05:00 分批出發",
-                    "抵達終點後掃描 QR Code 依成績領獎",
-                    "唱名三次未出現直接替補不補發"
-                ]
-            },
-            NS: {
-                title: "2026 NeverStop 挑戰巔峰－武嶺",
-                date: new Date('2026-06-27T05:00:00'),
-                organizer: "臺灣自由車運動協會",
-                spirit: "追求卓越的自我，不在征服他人，而在自我挑戰，追求永不放棄之運動精神。",
-                rules: [
-                    "競賽組限定 4 小時完成",
-                    "挑戰組限定 7 小時完成",
-                    "報名日期：2026/01/05 至 05/22",
-                    "以更高、更快、更強的奧林匹克格言為目標"
-                ]
-            }
-        };
-
-        let currentEventId = 'TIS';
-        let countdownInterval;
-
-        function switchEvent(id) {
-            currentEventId = id;
-            const event = events[id];
-            
-            // Update UI
-            document.getElementById('tab-tis').className = id === 'TIS' ? 'px-6 py-3 rounded-xl font-bold transition-all flex-1 text-sm tab-active' : 'px-6 py-3 rounded-xl font-bold transition-all flex-1 text-sm text-slate-500 hover:text-slate-300';
-            document.getElementById('tab-ns').className = id === 'NS' ? 'px-6 py-3 rounded-xl font-bold transition-all flex-1 text-sm tab-active' : 'px-6 py-3 rounded-xl font-bold transition-all flex-1 text-sm text-slate-500 hover:text-slate-300';
-            
-            document.getElementById('countdown-title').innerText = event.title + " 倒數中";
-            document.getElementById('event-spirit').innerText = "「" + event.spirit + "」";
-            document.getElementById('info-organizer').innerText = event.organizer;
-            document.getElementById('info-date').innerText = id === 'TIS' ? '2026.06.15 Mon' : '2026.06.27 Sat';
-            
-            const ruleList = document.getElementById('rule-list');
-            ruleList.innerHTML = event.rules.map(r => `
-                <li class="flex gap-3">
-                    <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
-                    <span>${r}</span>
-                </li>
-            `).join('');
-
-            startCountdown(event.date);
-        }
-
-        function startCountdown(targetDate) {
-            if (countdownInterval) clearInterval(countdownInterval);
-            
-            function update() {
-                const now = new Date().getTime();
-                const distance = targetDate.getTime() - now;
-                
-                if (distance < 0) {
-                    document.getElementById('days').innerText = "00";
-                    document.getElementById('hours').innerText = "00";
-                    document.getElementById('minutes').innerText = "00";
-                    document.getElementById('seconds').innerText = "00";
-                    return;
-                }
-                
-                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((distance % (1000 * 60)) / 1000);
-                
-                document.getElementById('days').innerText = String(d).padStart(2, '0');
-                document.getElementById('hours').innerText = String(h).padStart(2, '0');
-                document.getElementById('minutes').innerText = String(m).padStart(2, '0');
-                document.getElementById('seconds').innerText = String(s).padStart(2, '0');
-            }
-            
-            update();
-            countdownInterval = setInterval(update, 1000);
-        }
-
-        // Initialize
-        switchEvent('TIS');
-    </script>
+<body class="min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
 <script type="module" src="/index.tsx"></script>
 </body>
 </html>
