@@ -2,14 +2,79 @@
 import { ElevationPoint, EventInfo, EventType } from './types';
 
 export const ELEVATION_DATA: ElevationPoint[] = [
-  { name: '地理中心碑', distance: 0, elevation: 450 },
-  { name: '人止關', distance: 16, elevation: 790 },
-  { name: '霧社', distance: 22, elevation: 1170 },
-  { name: '清境', distance: 29, elevation: 1600 },
-  { name: '翠峰', distance: 39, elevation: 2330 },
-  { name: '鳶峰', distance: 45, elevation: 2730 },
-  { name: '昆陽', distance: 52, elevation: 3100 },
-  { name: '武嶺', distance: 55, elevation: 3275 },
+  { 
+    name: '中心碑', 
+    distance: 0, 
+    elevation: 531 
+  },
+  { 
+    name: '人止關', 
+    distance: 16.3, 
+    elevation: 874, 
+    segmentDistance: 16.3, 
+    segmentAscent: 343, 
+    segmentDescent: 0, 
+    segmentGrade: 2.1 
+  },
+  { 
+    name: '霧社', 
+    locationDetail: '霧社大巴停車場',
+    distance: 21.5, 
+    elevation: 1147, 
+    segmentDistance: 5.2, 
+    segmentAscent: 284, 
+    segmentDescent: 11, 
+    segmentGrade: 5.3 
+  },
+  { 
+    name: '清境', 
+    locationDetail: '清境7-11',
+    distance: 29.4, 
+    elevation: 1694, 
+    segmentDistance: 7.9, 
+    segmentAscent: 547, 
+    segmentDescent: 0, 
+    segmentGrade: 6.9 
+  },
+  { 
+    name: '翠峰', 
+    locationDetail: '翠峰派出所',
+    distance: 39.5, 
+    elevation: 2291, 
+    segmentDistance: 10.1, 
+    segmentAscent: 618, 
+    segmentDescent: 21, 
+    segmentGrade: 5.9 
+  },
+  { 
+    name: '鳶峰', 
+    locationDetail: '鳶峰觀景台',
+    distance: 45.7, 
+    elevation: 2757, 
+    segmentDistance: 6.2, 
+    segmentAscent: 466, 
+    segmentDescent: 0, 
+    segmentGrade: 7.5 
+  },
+  { 
+    name: '昆陽', 
+    locationDetail: '合歡山國家森林遊樂區界碑 - 昆陽',
+    distance: 50.7, 
+    elevation: 3083, 
+    segmentDistance: 5.0, 
+    segmentAscent: 326, 
+    segmentDescent: 0, 
+    segmentGrade: 6.5 
+  },
+  { 
+    name: '武嶺', 
+    distance: 52.9, 
+    elevation: 3275, 
+    segmentDistance: 2.2, 
+    segmentAscent: 192, 
+    segmentDescent: 0, 
+    segmentGrade: 8.7 
+  },
 ];
 
 export const EVENTS: EventInfo[] = [

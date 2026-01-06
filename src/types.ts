@@ -8,8 +8,13 @@ export interface CountdownTime {
 
 export interface ElevationPoint {
   name: string;
-  distance: number;
-  elevation: number;
+  locationDetail?: string;
+  distance: number; // 累計里程
+  elevation: number; // 海拔
+  segmentAscent?: number; // 該段上升
+  segmentDescent?: number; // 該段下降
+  segmentDistance?: number; // 該段距離
+  segmentGrade?: number; // 該段平均坡度
 }
 
 export enum EventType {

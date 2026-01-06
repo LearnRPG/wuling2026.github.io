@@ -11,16 +11,20 @@ const DRIVETRAIN_EFFICIENCY = 0.98; // 傳動效率 98%
 
 const ClimbingCalculator: React.FC = () => {
   const [ftp, setFtp] = useState<number>(250);
-  const [weight, setWeight] = useState<number>(70);
-  const [gearWeight, setGearWeight] = useState<number>(10); // 預設改為 10kg
+  const [weight, setWeight] = useState<number | string>(70);
+  const [gearWeight, setGearWeight] = useState<number | string>(10);
   const [intensity, setIntensity] = useState<number>(0.80);
   const [useAltitudeCorrection, setUseAltitudeCorrection] = useState<boolean>(true);
 
   const calculatedData = useMemo(() => {
-    const totalMass = weight + gearWeight;
+    // 處理輸入框為空的情況
+    const numWeight = weight === '' ? 0 : parseFloat(weight.toString()) || 0;
+    const numGearWeight = gearWeight === '' ? 0 : parseFloat(gearWeight.toString()) || 0;
+    const totalMass = numWeight + numGearWeight;
     
     // 求解速度的函數 (二分搜尋法)
     const solveVelocity = (targetPower: number, grade: number, airDensity: number) => {
+      if (totalMass <= 0 || targetPower <= 0) return 0.1;
       let low = 0;
       let high = 25; 
       const theta = Math.atan(grade);
@@ -47,9 +51,9 @@ const ClimbingCalculator: React.FC = () => {
       const start = ELEVATION_DATA[i - 1];
       const end = ELEVATION_DATA[i];
       
-      const distKm = end.distance - start.distance;
+      const distKm = end.segmentDistance || (end.distance - start.distance);
       const elevGain = end.elevation - start.elevation;
-      const grade = elevGain / (distKm * 1000);
+      const grade = (end.segmentGrade ? end.segmentGrade / 100 : elevGain / (distKm * 1000));
       const avgElev = (start.elevation + end.elevation) / 2;
 
       const airDensity = RHO_SEA_LEVEL * Math.exp(-avgElev / 8500);
@@ -59,7 +63,7 @@ const ClimbingCalculator: React.FC = () => {
       
       const segmentTargetPower = ftp * intensity * altitudeFactor;
       const v = solveVelocity(segmentTargetPower, grade, airDensity);
-      const segmentSeconds = (distKm * 1000) / v;
+      const segmentSeconds = v > 0 ? (distKm * 1000) / v : 0;
       
       totalSeconds += segmentSeconds;
 
@@ -72,8 +76,11 @@ const ClimbingCalculator: React.FC = () => {
 
       segmentsDetail.push({
         name: end.name,
+        locationDetail: end.locationDetail,
         distance: end.distance,
         elevation: end.elevation,
+        ascent: end.segmentAscent,
+        descent: end.segmentDescent,
         grade: (grade * 100).toFixed(1),
         avgSpeed: (v * 3.6).toFixed(1),
         segmentTime: formatTime(segmentSeconds),
@@ -83,13 +90,13 @@ const ClimbingCalculator: React.FC = () => {
 
     const totalHours = Math.floor(totalSeconds / 3600);
     const totalMins = Math.floor((totalSeconds % 3600) / 60);
-    const wkg = (ftp * intensity) / totalMass;
+    const wkg = totalMass > 0 ? (ftp * intensity) / totalMass : 0;
 
     let medal = '鐵';
     const hoursNum = totalSeconds / 3600;
-    if (hoursNum <= 4) medal = '金';
-    else if (hoursNum <= 5) medal = '銀';
-    else if (hoursNum <= 7) medal = '銅';
+    if (hoursNum <= 4 && hoursNum > 0) medal = '金';
+    else if (hoursNum <= 5 && hoursNum > 0) medal = '銀';
+    else if (hoursNum <= 7 && hoursNum > 0) medal = '銅';
 
     return {
       totalHours,
@@ -108,6 +115,26 @@ const ClimbingCalculator: React.FC = () => {
       case '銅': return 'text-orange-700 border-orange-700/30 bg-orange-700/10';
       default: return 'text-slate-500 border-slate-700/30 bg-slate-700/10';
     }
+  };
+
+  const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (val === '') {
+      setWeight('');
+      return;
+    }
+    const cleaned = val.replace(/[^0-9.]/g, '');
+    setWeight(cleaned);
+  };
+
+  const handleGearWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (val === '') {
+      setGearWeight('');
+      return;
+    }
+    const cleaned = val.replace(/[^0-9.]/g, '');
+    setGearWeight(cleaned);
   };
 
   return (
@@ -162,15 +189,17 @@ const ClimbingCalculator: React.FC = () => {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase text-left block">騎士體重 (kg)</label>
                 <input 
-                  type="number" step="0.1" value={weight} onChange={(e) => setWeight(parseFloat(e.target.value) || 0)}
+                  type="text" value={weight} onChange={handleWeightChange}
                   className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-blue-500 transition-all"
+                  placeholder="輸入體重"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase text-left block">器材總重 (kg)</label>
                 <input 
-                  type="number" step="0.1" value={gearWeight} onChange={(e) => setGearWeight(parseFloat(e.target.value) || 0)}
+                  type="text" value={gearWeight} onChange={handleGearWeightChange}
                   className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-blue-500 transition-all"
+                  placeholder="車+裝備"
                 />
               </div>
             </div>
@@ -231,6 +260,8 @@ const ClimbingCalculator: React.FC = () => {
                   <th className="pb-3 px-2">路段節點</th>
                   <th className="pb-3 px-2 text-center">里程</th>
                   <th className="pb-3 px-2 text-center">海拔</th>
+                  <th className="pb-3 px-2 text-center">上升量</th>
+                  <th className="pb-3 px-2 text-center">下降量</th>
                   <th className="pb-3 px-2 text-center">平均坡度</th>
                   <th className="pb-3 px-2 text-center">預估均速</th>
                   <th className="pb-3 px-2 text-right">區段時間</th>
@@ -239,9 +270,11 @@ const ClimbingCalculator: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-white/5">
                 <tr className="bg-white/5">
-                   <td className="py-3 px-2 text-xs font-bold text-slate-400">地理中心碑 (起點)</td>
+                   <td className="py-3 px-2 text-xs font-bold text-slate-400">中心碑 (起點)</td>
                    <td className="py-3 px-2 text-center text-[10px] font-mono text-slate-500">0.0 km</td>
-                   <td className="py-3 px-2 text-center text-[10px] font-mono text-slate-500">450 m</td>
+                   <td className="py-3 px-2 text-center text-[10px] font-mono text-slate-500">{ELEVATION_DATA[0].elevation} m</td>
+                   <td className="text-center">-</td>
+                   <td className="text-center">-</td>
                    <td className="text-center">-</td>
                    <td className="text-center">-</td>
                    <td className="text-right">-</td>
@@ -250,9 +283,14 @@ const ClimbingCalculator: React.FC = () => {
                 {calculatedData.segments.map((seg, idx) => (
                   <tr key={idx} className="group hover:bg-white/5 transition-colors">
                     <td className="py-4 px-2">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-1.5 h-1.5 rounded-full ${idx === calculatedData.segments.length - 1 ? 'bg-rose-500' : 'bg-blue-500'}`}></div>
-                        <span className="text-sm font-bold text-slate-200">{seg.name}</span>
+                      <div className="flex flex-col text-left">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-1.5 h-1.5 rounded-full ${idx === calculatedData.segments.length - 1 ? 'bg-rose-500' : 'bg-blue-500'}`}></div>
+                          <span className="text-sm font-bold text-slate-200">{seg.name}</span>
+                        </div>
+                        {seg.locationDetail && (
+                          <span className="text-[9px] text-slate-500 ml-4.5 pl-4 font-medium">{seg.locationDetail}</span>
+                        )}
                       </div>
                     </td>
                     <td className="py-4 px-2 text-center text-xs font-mono text-slate-400">
@@ -260,6 +298,12 @@ const ClimbingCalculator: React.FC = () => {
                     </td>
                     <td className="py-4 px-2 text-center text-xs font-mono text-slate-400">
                       {seg.elevation} <span className="text-[9px]">m</span>
+                    </td>
+                    <td className="py-4 px-2 text-center text-xs font-mono text-emerald-500/80">
+                      +{seg.ascent} <span className="text-[9px]">m</span>
+                    </td>
+                    <td className="py-4 px-2 text-center text-xs font-mono text-rose-500/80">
+                      -{seg.descent} <span className="text-[9px]">m</span>
                     </td>
                     <td className="py-4 px-2 text-center">
                       <span className={`text-[10px] font-black px-2 py-0.5 rounded ${parseFloat(seg.grade) > 8 ? 'bg-rose-500/20 text-rose-500' : 'bg-slate-800 text-slate-400'}`}>
@@ -282,7 +326,7 @@ const ClimbingCalculator: React.FC = () => {
              <div>
                <p className="text-xs font-black text-blue-400 uppercase">物理動力預估模型說明</p>
                <p className="text-xs text-slate-400 leading-relaxed mt-1">
-                 本模型結合了動態空氣密度（海拔越高阻力越小）與高度功率補償（海拔越高有效輸出越低）。實際情況下，集團騎乘的風阻效益 (Drafting) 可進一步提升約 10-20% 的速度，請視個人情況調整 IF。
+                 本模型已根據您提供的分段上升與下降量優化。計算考量了高海拔空氣稀薄產生的風阻降低效果，以及含氧量下降導致的功率損失 (Altitude Correction)。
                </p>
              </div>
           </div>
